@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatGPT UI - Dark Theme</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            margin: 0;
+            padding: 0;
+            color: #ffffff;
+        }
+
+        .chat-container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #1e1e1e;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-header {
+            background-color: #333333;
+            color: #ffffff;
+            padding: 15px;
+            text-align: center;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+
+        .chat-messages {
+            padding: 20px;
+            padding: 1%;
+        }
+
+        .message {
+            margin-bottom: 20px;
+        }
+
+        .message .user {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #4a90e2;
+        }
+
+        .message .text {
+            background-color: #2a2a2a;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-wrap: break-word;
+            line-height: 100%;
+        }
+
+        .user-input {
+            display: flex;
+            justify-content: space-between;
+            background-color: #2a2a2a;
+            padding: 15px;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+        .user-input input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #444444;
+            background-color: #333333;
+            color: #ffffff;
+            outline: none;
+        }
+
+        .user-input button {
+            padding: 10px 20px;
+            border-radius: 5px;
+            background-color: #4a90e2;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .user-input button:hover {
+            background-color: #357ab8;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            ChatGPT
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <!-- Messages will be appended here -->
+        </div>
+        <div class="user-input">
+            <input type="text" id="userInput" placeholder="Type your message...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        function sendMessage() {
+            const userInput = document.getElementById('userInput');
+            const message = userInput.value;
+
+            if (message.trim() === '') return;
+            display(message,"user")
+
+            // call gemini API and display data on screen
+            apiCallAndDisplay(message)
+           
+        }
+
+        function display(message, person){
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message';
+
+            const userSpan = document.createElement('span');
+            userSpan.className = 'user';
+            userSpan.textContent = person+':';
+            messageDiv.appendChild(userSpan);
+
+            const textSpan = document.createElement('span');
+            textSpan.className = 'text';
+            textSpan.textContent = message;
+            messageDiv.appendChild(textSpan);
+
+            chatMessages.appendChild(messageDiv);
+
+            userInput.value = '';
+        }
+
+
+        function apiCallAndDisplay(message){
+                const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=';
+                const data = {
+                contents: [
+                    {
+                    parts: [
+                        {
+                        text: message
+                        }
+                    ]
+                    }
+                ]
+                };
+
+                fetch(url, {
+                method: 'POST',
+                body: JSON.stringify(data)
+                })
+                .then(response => {
+                return response.json();
+                })
+                .then(data => {
+                    console.log(data);
+                    display(data.candidates[0].content.parts[0].text,"chatgpt")
+                })
+        }
+    </script>
+</body>
+</html>

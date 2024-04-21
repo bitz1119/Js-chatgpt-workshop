@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+    </head>
+
+    <body>
+        <div id="main">
+            <div id="chat" style="height: 100px;width: 100px;background-color: aquamarine;">
+
+            </div>
+            <input id="prompt"/>
+            <button id="submit" onclick="addInChatBox()"> Click on me</button>
+        </div>
+
+    </body>
+
+    <script>
+        // alert("changing hello to bittoo");
+        // document.getElementsByTagName("h1")[0].innerHTML="Bittoo";
+        function addInChatBox(){
+            let inputText = document.getElementById("prompt").value;
+            console.log(inputText)
+            let textElement = document.createElement("p");
+            textElement.innerHTML = inputText;
+            document.getElementById("chat").append(textElement);
+        }    
+    </script>
+</html>
